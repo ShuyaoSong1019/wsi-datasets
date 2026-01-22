@@ -15,8 +15,8 @@
             <h1><i class="fas fa-database"></i> WSI/ROI数据集管理系统</h1>
             <p>收集、管理和展示全切片图像与感兴趣区域数据集信息</p>
             <div class="tabs">
-                <button class="tab-btn active" data-tab="form">添加数据集</button>
-                <button class="tab-btn" data-tab="cards">浏览数据集</button>
+                <button class="tab-btn active" data-tab="cards">浏览数据集</button>
+                <button class="tab-btn" data-tab="form">添加数据集</button>
                 <button class="tab-btn" data-tab="table">表格视图</button>
             </div>
         </header>
@@ -25,7 +25,7 @@
         <div id="statusMessage" class="status-message"></div>
 
         <!-- 表单区域 -->
-        <section id="form" class="tab-content active">
+        <section id="form" class="tab-content">
             <div class="form-container">
                 <h2><i class="fas fa-plus-circle"></i> 添加新数据集</h2>
                 <form id="datasetForm">
@@ -212,7 +212,7 @@
         </section>
 
         <!-- 卡片展示区域 -->
-        <section id="cards" class="tab-content">
+        <section id="cards" class="tab-content active">
             <div class="cards-header">
                 <h2><i class="fas fa-th-large"></i> 数据集卡片展示</h2>
                 <div class="filter-controls">
