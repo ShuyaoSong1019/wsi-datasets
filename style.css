@@ -629,6 +629,135 @@ tbody tr:hover {
     font-size: 0.85rem;
 }
 
+/* 同步面板样式 */
+.sync-panel {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 100;
+}
+
+.sync-toggle {
+    padding: 12px 20px;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.sync-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    display: none;
+    width: 350px;
+}
+
+.sync-content h4 {
+    color: var(--success-color);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sync-stats {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+}
+
+.sync-stats p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.sync-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.sync-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* 同步模态框样式 */
+.sync-modal {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.sync-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.sync-table th,
+.sync-table td {
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.sync-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.sync-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.sync-note {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* GitHub Actions状态指示器 */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
 /* 模态框 */
 .modal {
     display: none;

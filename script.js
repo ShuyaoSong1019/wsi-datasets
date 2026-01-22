@@ -225,6 +225,225 @@ function loadConfig() {
         config = JSON.parse(savedConfig);
     }
 }
+// 触发GitHub Action
+async function triggerRepositoryDispatch(formData) {
+    // 移除敏感信息（本地路径等）
+    const sanitizedData = { ...formData };
+    if (sanitizedData.local_path) {
+        sanitizedData.local_path = '保密路径';
+    }
+    
+    const apiUrl = `https://api.github.com/repos/${config.repoOwner}/${config.repoName}/dispatches`;
+    
+    console.log('触发GitHub Action，URL:', apiUrl);
+    console.log('提交的数据:', sanitizedData);
+    
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `token ${config.githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            event_type: 'update_dataset',
+            client_payload: sanitizedData
+        })
+    });
+    
+    console.log('GitHub API响应状态:', response.status);
+    
+    if (response.status === 204) {
+        // 204 No Content 是成功的响应
+        console.log('GitHub Action已成功触发');
+        return true;
+    }
+    
+    if (!response.ok) {
+        let errorMessage = `HTTP错误: ${response.status}`;
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+            // 无法解析JSON响应
+        }
+        
+        // 特殊处理常见的GitHub API错误
+        if (response.status === 401) {
+            errorMessage = 'GitHub Token无效或已过期，请重新配置';
+        } else if (response.status === 403) {
+            errorMessage = '权限不足，请确保Token有足够的权限';
+        } else if (response.status === 404) {
+            errorMessage = '仓库不存在或没有访问权限';
+        }
+        
+        throw new Error(errorMessage);
+    }
+    
+    return response.ok;
+}
+
+// 本地存储相关函数
+function saveToLocalStorage(formData) {
+    const localData = JSON.parse(localStorage.getItem('wsi_datasets_local') || '[]');
+    
+    // 确保数据有ID和时间戳
+    const dataWithMeta = {
+        ...formData,
+        id: formData.id || Date.now().toString(),
+        created_at: formData.created_at || new Date().toISOString(),
+        isLocal: true // 标记为本地数据
+    };
+    
+    localData.push(dataWithMeta);
+    localStorage.setItem('wsi_datasets_local', JSON.stringify(localData));
+    
+    console.log('已保存到本地存储，数据量:', localData.length);
+}
+
+function loadLocalDatasets() {
+    return JSON.parse(localStorage.getItem('wsi_datasets_local') || '[]');
+}
+
+function syncLocalToGitHub() {
+    const localData = loadLocalDatasets();
+    if (localData.length === 0) {
+        toastr.info('没有需要同步的本地数据');
+        return;
+    }
+    
+    // 显示同步选项
+    showSyncModal(localData);
+}
+
+// 显示同步模态框
+function showSyncModal(localDatasets) {
+    const modalBody = document.getElementById('modalBody');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    modalTitle.textContent = '同步本地数据到GitHub';
+    
+    let html = `
+        <div class="sync-modal">
+            <p><strong>发现 ${localDatasets.length} 个本地数据集</strong></p>
+            <p>这些数据保存在您的浏览器本地，可以同步到GitHub仓库。</p>
+            
+            <div class="local-datasets">
+                <h4>本地数据集列表：</h4>
+                <table class="sync-table">
+                    <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>数据集名称</th>
+                            <th>器官</th>
+                            <th>数据格式</th>
+                            <th>保存时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    localDatasets.forEach((dataset, index) => {
+        html += `
+            <tr>
+                <td><input type="checkbox" id="dataset-${index}" checked></td>
+                <td>${dataset.dataset_name}</td>
+                <td>${dataset.organ_chinese}</td>
+                <td>${dataset.data_format}</td>
+                <td>${new Date(dataset.created_at).toLocaleDateString()}</td>
+            </tr>
+        `;
+    });
+    
+    html += `
+                    </tbody>
+                </table>
+                
+                <div class="sync-actions">
+                    <button class="btn btn-primary" onclick="syncSelectedDatasets()">
+                        <i class="fas fa-cloud-upload-alt"></i> 同步选中的数据
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportLocalData()">
+                        <i class="fas fa-download"></i> 导出为JSON文件
+                    </button>
+                    <button class="btn btn-danger" onclick="clearLocalData()">
+                        <i class="fas fa-trash"></i> 清空本地数据
+                    </button>
+                </div>
+                
+                <div class="sync-note">
+                    <p><strong>注意：</strong>同步操作可能需要一些时间，请勿关闭页面。</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modalBody.innerHTML = html;
+    document.getElementById('datasetModal').style.display = 'flex';
+}
+
+// 同步选中的数据
+async function syncSelectedDatasets() {
+    const localDatasets = loadLocalDatasets();
+    const selectedDatasets = [];
+    
+    // 获取选中的数据集
+    localDatasets.forEach((dataset, index) => {
+        const checkbox = document.getElementById(`dataset-${index}`);
+        if (checkbox && checkbox.checked) {
+            selectedDatasets.push(dataset);
+        }
+    });
+    
+    if (selectedDatasets.length === 0) {
+        toastr.warning('请至少选择一个数据集进行同步');
+        return;
+    }
+    
+    toastr.info(`正在同步 ${selectedDatasets.length} 个数据集...`);
+    
+    // 逐个同步数据集
+    let successCount = 0;
+    let failCount = 0;
+    
+    for (const dataset of selectedDatasets) {
+        try {
+            await triggerRepositoryDispatch(dataset);
+            successCount++;
+            toastr.success(`已同步: ${dataset.dataset_name}`);
+            
+            // 成功同步后从本地存储中移除
+            removeFromLocalStorage(dataset.id);
+            
+            // 短暂延迟避免速率限制
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+            failCount++;
+            console.error(`同步失败 ${dataset.dataset_name}:`, error);
+            toastr.error(`同步失败: ${dataset.dataset_name}`);
+        }
+    }
+    
+    // 关闭模态框
+    document.getElementById('datasetModal').style.display = 'none';
+    
+    // 显示最终结果
+    if (failCount === 0) {
+        toastr.success(`成功同步 ${successCount} 个数据集到GitHub！`);
+    } else {
+        toastr.warning(`同步完成：成功 ${successCount} 个，失败 ${failCount} 个`);
+    }
+    
+    // 重新加载数据
+    loadDatasets();
+}
+
+// 从本地存储移除数据
+function removeFromLocalStorage(datasetId) {
+    const localData = loadLocalDatasets();
+    const updatedData = localData.filter(dataset => dataset.id !== datasetId);
+    localStorage.setItem('wsi_datasets_local', JSON.stringify(updatedData));
+}
 
 // 保存数据到GitHub
 async function saveToGitHub(formData) {
@@ -232,21 +451,96 @@ async function saveToGitHub(formData) {
         throw new Error('请先配置GitHub信息');
     }
     
-    // 读取现有数据
-    let existingData = [];
     try {
-        existingData = await fetchDatasets();
+        // 验证表单数据
+        if (!validateFormData(formData)) {
+            throw new Error('请填写所有必填字段');
+        }
+        
+        // 触发GitHub Action
+        await triggerRepositoryDispatch(formData);
+        
+        // 显示成功消息
+        toastr.success('数据提交成功！GitHub Action正在处理...');
+        
+        // 稍后自动刷新数据
+        setTimeout(() => {
+            loadDatasets();
+        }, 10000); // 10秒后刷新
+        
     } catch (error) {
-        console.log('创建新数据集文件');
+        console.error('提交失败:', error);
+        
+        // 如果GitHub Action失败，保存到本地存储
+        saveToLocalStorage(formData);
+        toastr.warning('在线提交受限，数据已保存到本地。');
+        toastr.info('您可以稍后手动同步到GitHub。');
+        
+        // 立即刷新显示
+        loadDatasets();
     }
     
-    // 添加新数据
-    existingData.push(formData);
-    
-    // 保存到GitHub
-    await updateGitHubFile(existingData);
+    // 重置表单
+    resetForm();
 }
 
+// 触发GitHub Action
+async function triggerRepositoryDispatch(formData) {
+    // 移除敏感信息（本地路径等）
+    const sanitizedData = { ...formData };
+    if (sanitizedData.local_path) {
+        sanitizedData.local_path = '保密路径';
+    }
+    
+    const apiUrl = `https://api.github.com/repos/${config.repoOwner}/${config.repoName}/dispatches`;
+    
+    console.log('触发GitHub Action，URL:', apiUrl);
+    console.log('提交的数据:', sanitizedData);
+    
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `token ${config.githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            event_type: 'update_dataset',
+            client_payload: sanitizedData
+        })
+    });
+    
+    console.log('GitHub API响应状态:', response.status);
+    
+    if (response.status === 204) {
+        // 204 No Content 是成功的响应
+        console.log('GitHub Action已成功触发');
+        return true;
+    }
+    
+    if (!response.ok) {
+        let errorMessage = `HTTP错误: ${response.status}`;
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+            // 无法解析JSON响应
+        }
+        
+        // 特殊处理常见的GitHub API错误
+        if (response.status === 401) {
+            errorMessage = 'GitHub Token无效或已过期，请重新配置';
+        } else if (response.status === 403) {
+            errorMessage = '权限不足，请确保Token有足够的权限';
+        } else if (response.status === 404) {
+            errorMessage = '仓库不存在或没有访问权限';
+        }
+        
+        throw new Error(errorMessage);
+    }
+    
+    return response.ok;
+}
 // 更新GitHub文件
 async function updateGitHubFile(data) {
     const apiUrl = `https://api.github.com/repos/${config.repoOwner}/${config.repoName}/contents/${config.dataFilePath}`;

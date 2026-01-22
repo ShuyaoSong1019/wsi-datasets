@@ -1,0 +1,47 @@
+name: Update Dataset via Web Form
+
+on:
+  repository_dispatch:
+    types: [update_dataset]
+
+jobs:
+  update-dataset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+      
+      - name: Check if file exists
+        id: check_file
+        run: |
+          if [ -f "datasets.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "[]" > datasets.json
+          fi
+      
+      - name: Update dataset
+        env:
+          EVENT_DATA: ${{ toJson(github.event.client_payload) }}
+        run: |
+          if [ "${{ steps.check_file.outputs.exists }}" = "true" ]; then
+            # 读取现有数据
+            current_data=$(cat datasets.json)
+            # 添加新数据
+            echo "$current_data" | jq --argjson new "$EVENT_DATA" '. + [$new]' > temp.json
+            mv temp.json datasets.json
+          else
+            # 创建新文件
+            echo "[$EVENT_DATA]" > datasets.json
+          fi
+          
+          # 配置git
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          
+          # 提交更改
+          git add datasets.json
+          git commit -m "Add new dataset: $(echo $EVENT_DATA | jq -r '.dataset_name')"
+          git push

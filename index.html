@@ -330,6 +330,36 @@
         </div>
     </div>
 
+    <!-- 在GitHub配置面板后面添加同步面板 -->
+    <div class="sync-panel">
+        <button class="sync-toggle" id="syncToggle">
+            <i class="fas fa-sync-alt"></i> 数据同步
+        </button>
+        <div class="sync-content" id="syncContent">
+            <h4><i class="fas fa-database"></i> 数据同步管理</h4>
+            <p>管理本地存储的数据集和同步到GitHub</p>
+            
+            <div class="sync-stats">
+                <p id="localStats">本地数据：加载中...</p>
+                <p id="remoteStats">远程数据：加载中...</p>
+            </div>
+            
+            <div class="sync-actions">
+                <button class="btn btn-primary" onclick="syncLocalToGitHub()">
+                    <i class="fas fa-cloud-upload-alt"></i> 同步到GitHub
+                </button>
+                <button class="btn btn-secondary" onclick="exportAllData()">
+                    <i class="fas fa-file-export"></i> 导出所有数据
+                </button>
+                <button class="btn btn-info" onclick="checkGitHubStatus()">
+                    <i class="fas fa-check-circle"></i> 检查GitHub状态
+                </button>
+            </div>
+            
+            <div class="sync-status" id="syncStatus"></div>
+        </div>
+    </div>
+
     <!-- 模态框（用于查看详情） -->
     <div id="datasetModal" class="modal">
         <div class="modal-content">
