@@ -1,0 +1,51 @@
+name: Sync Datasets from repository_dispatch
+
+on:
+  repository_dispatch:
+    types: [update_dataset]
+
+permissions:
+  contents: write
+
+jobs:
+  update-datasets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show incoming event (for debug)
+        run: |
+          echo "GITHUB_EVENT_PATH=$GITHUB_EVENT_PATH"
+          cat "$GITHUB_EVENT_PATH"
+
+      - name: Ensure datasets.json exists
+        run: |
+          if [ ! -f datasets.json ]; then
+            echo '[]' > datasets.json
+          fi
+
+      - name: Append payload to datasets.json
+        env:
+          EVENT_PATH: $GITHUB_EVENT_PATH
+        run: |
+          new=$(jq '.client_payload' "$EVENT_PATH")
+          if [ -z "$new" ] || [ "$new" = "null" ]; then
+            echo "No client_payload found in event"
+            exit 1
+          fi
+          tmp=$(mktemp)
+          jq ". + [ $new ]" datasets.json > "$tmp"
+          mv "$tmp" datasets.json
+          echo "Appended dataset: $(echo "$new" | jq -r '.dataset_name')"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datasets.json
+          if git commit -m "Add dataset: $(jq -r '.client_payload.dataset_name' "$GITHUB_EVENT_PATH")"; then
+            git push
+          else
+            echo "No changes to commit"
+          fi

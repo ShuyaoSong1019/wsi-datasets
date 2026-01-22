@@ -286,7 +286,7 @@ async function triggerRepositoryDispatch(formData) {
 // 本地存储相关函数
 function saveToLocalStorage(formData) {
     const localData = JSON.parse(localStorage.getItem('wsi_datasets_local') || '[]');
-    
+
     // 确保数据有ID和时间戳
     const dataWithMeta = {
         ...formData,
@@ -294,10 +294,22 @@ function saveToLocalStorage(formData) {
         created_at: formData.created_at || new Date().toISOString(),
         isLocal: true // 标记为本地数据
     };
-    
+
     localData.push(dataWithMeta);
     localStorage.setItem('wsi_datasets_local', JSON.stringify(localData));
-    
+
+    // 同步到内存中的数据并立即刷新展示
+    try {
+        if (!datasets.find(d => d.id === dataWithMeta.id || d.dataset_name === dataWithMeta.dataset_name)) {
+            datasets.unshift(dataWithMeta);
+            originalDatasets = [...datasets];
+            updateFilterOptions();
+            displayDatasets();
+        }
+    } catch (e) {
+        console.warn('更新内存数据失败', e);
+    }
+
     console.log('已保存到本地存储，数据量:', localData.length);
 }
 
@@ -594,22 +606,55 @@ async function updateGitHubFile(data) {
 // 从GitHub加载数据集
 async function loadDatasets() {
     try {
-        datasets = await fetchDatasets();
+        let remoteDatasets = [];
+
+        // 优先尝试从已配置的GitHub仓库加载
+        if (config.repoOwner && config.repoName) {
+            try {
+                remoteDatasets = await fetchDatasets();
+            } catch (err) {
+                console.warn('从GitHub加载失败，尝试后备加载：', err);
+            }
+        } else {
+            // 如果没有配置GitHub，尝试加载工作目录下的 datasets.json
+            try {
+                const resp = await fetch(config.dataFilePath || 'datasets.json');
+                if (resp.ok) {
+                    remoteDatasets = await resp.json();
+                }
+            } catch (err) {
+                console.warn('本地 datasets.json 加载失败：', err);
+            }
+        }
+
+        // 加载浏览器本地保存的数据（离线提交）
+        const local = loadLocalDatasets();
+
+        // 合并：优先保留远端数据，补充本地数据（按 id 或名称去重）
+        const merged = Array.isArray(remoteDatasets) ? [...remoteDatasets] : [];
+        for (const item of local) {
+            if (!merged.find(d => (d.id && d.id === item.id) || d.dataset_name === item.dataset_name)) {
+                merged.push(item);
+            }
+        }
+
+        datasets = merged;
         originalDatasets = [...datasets];
-        
-        // 更新筛选器选项
+
+        // 更新筛选器选项并显示
         updateFilterOptions();
-        
-        // 显示数据集
         displayDatasets();
-        
+
         toastr.success(`已加载 ${datasets.length} 个数据集`);
     } catch (error) {
         console.error('加载数据集失败:', error);
-        toastr.error('加载数据集失败，请检查GitHub配置');
-        
-        // 显示空状态
-        showEmptyState();
+        toastr.error('加载数据集失败，已回退到本地数据');
+
+        // 回退到仅使用本地存储的数据
+        datasets = loadLocalDatasets();
+        originalDatasets = [...datasets];
+        updateFilterOptions();
+        displayDatasets();
     }
 }
 
