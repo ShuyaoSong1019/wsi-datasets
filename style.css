@@ -1193,11 +1193,6 @@ textarea:focus,
     color: var(--secondary-color);
 }
 
-.badge-both {
-    background: rgba(139, 92, 246, 0.1);
-    color: var(--info-color);
-}
-
 /* Card Type Badge */
 .card-type {
     background: rgba(255, 255, 255, 0.3);

@@ -106,12 +106,12 @@ function updateStatistics() {
     
     // 计算 WSI 数据集数量
     const totalWSIs = validDatasets.filter(d => 
-        d.data_type && (d.data_type === 'WSI' || d.data_type === 'Both')
+        d.data_type && d.data_type === 'WSI'
     ).length;
     
     // 计算 ROI 数据集数量
     const totalROIs = validDatasets.filter(d => 
-        d.data_type && (d.data_type === 'ROI' || d.data_type === 'Both')
+        d.data_type && d.data_type === 'ROI'
     ).length;
     
     // 执行动画效果更新数字
@@ -565,23 +565,23 @@ async function saveToGitHub(formData) {
             throw new Error('请填写所有必填字段');
         }
         
-        // 触发GitHub Action
-        await triggerRepositoryDispatch(formData);
+        // 使用GitHub Contents API直接更新datasets.json文件
+        await updateDatasetsJsonFile(formData);
         
         // 显示成功消息
-        toastr.success('数据提交成功！GitHub Action正在处理...');
+        toastr.success('数据集已成功提交到GitHub仓库！');
         
         // 稍后自动刷新数据
         setTimeout(() => {
             loadDatasets();
-        }, 10000); // 10秒后刷新
+        }, 2000); // 2秒后刷新
         
     } catch (error) {
         console.error('提交失败:', error);
         
-        // 如果GitHub Action失败，保存到本地存储
+        // 如果GitHub提交失败，保存到本地存储
         saveToLocalStorage(formData);
-        toastr.warning('在线提交受限，数据已保存到本地。');
+        toastr.warning('GitHub提交失败，数据已保存到本地。');
         toastr.info('您可以稍后手动同步到GitHub。');
         
         // 立即刷新显示
@@ -590,6 +590,96 @@ async function saveToGitHub(formData) {
     
     // 重置表单
     resetForm();
+}
+
+// 使用GitHub Contents API直接更新datasets.json文件
+async function updateDatasetsJsonFile(newDataset) {
+    const filePath = 'datasets.json';
+    const apiUrl = `https://api.github.com/repos/${config.repoOwner}/${config.repoName}/contents/${filePath}`;
+    
+    console.log('正在更新datasets.json文件...');
+    
+    // 步骤1: 获取当前文件内容和SHA
+    const getResponse = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': `token ${config.githubToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+        }
+    });
+    
+    if (!getResponse.ok) {
+        throw new Error(`无法获取文件: ${getResponse.status} ${getResponse.statusText}`);
+    }
+    
+    const fileData = await getResponse.json();
+    const currentSha = fileData.sha;
+    
+    // 步骤2: 解码当前文件内容
+    const currentContent = decodeBase64(fileData.content);
+    let datasets = JSON.parse(currentContent);
+    
+    // 步骤3: 添加新数据集
+    // 确保新数据集有必要的字段
+    const datasetToAdd = {
+        ...newDataset,
+        id: newDataset.id || Date.now().toString(),
+        created_at: newDataset.created_at || new Date().toISOString()
+    };
+    
+    // 添加到数组开头
+    datasets.unshift(datasetToAdd);
+    
+    // 步骤4: 编码新内容为base64
+    const newContent = JSON.stringify(datasets, null, 2);
+    const encodedContent = encodeBase64(newContent);
+    
+    // 步骤5: 更新文件
+    const updateResponse = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${config.githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: `Add new dataset: ${datasetToAdd.dataset_name}`,
+            content: encodedContent,
+            sha: currentSha,
+            branch: 'main' // 或 'master'，根据你的仓库默认分支
+        })
+    });
+    
+    if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(`更新文件失败: ${errorData.message || updateResponse.statusText}`);
+    }
+    
+    console.log('datasets.json文件更新成功！');
+    return await updateResponse.json();
+}
+
+// Base64编码函数
+function encodeBase64(str) {
+    // 处理Unicode字符
+    const utf8Bytes = new TextEncoder().encode(str);
+    let binary = '';
+    utf8Bytes.forEach(byte => {
+        binary += String.fromCharCode(byte);
+    });
+    return btoa(binary);
+}
+
+// Base64解码函数
+function decodeBase64(base64Str) {
+    // 移除换行符
+    const cleanBase64 = base64Str.replace(/\n/g, '');
+    const binary = atob(cleanBase64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
 }
 
 // 触发GitHub Action
@@ -897,9 +987,8 @@ function filterDatasets() {
 function createCardHTML(dataset) {
     const typeColors = {
         'VQA': '#8b5cf6',  // 紫色
-        'WSI': '#2563eb',  // 蓝色
-        'ROI': '#0ea5e9',  // 天空蓝
-        'Both': '#10b981'  // 绿色
+        'WSI': '#6366f1',  // 靛蓝色
+        'ROI': '#06b6d4'   // 青色
     };
     
     const typeColor = typeColors[dataset.data_type] || '#6c757d';
