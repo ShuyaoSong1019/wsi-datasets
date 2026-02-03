@@ -5,11 +5,11 @@
 
 :root {
     /* Color Palette - Clean Blue Theme */
-    --primary-color: #60a5fa;
-    --primary-light: #93c5fd;
+    --primary-color: #2d88f7;
+    --primary-light: #c5e0ff;
     --primary-dark: #3b82f6;
     
-    --secondary-color: #38bdf8;
+    --secondary-color: #1e71dd;
     --secondary-light: #7dd3fc;
     --secondary-dark: #0ea5e9;
     
@@ -112,7 +112,7 @@ body {
 
 .hero-section {
     position: relative;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #a4cafa 0%, #2972e7 100%);
     color: white;
     padding: 4rem 0 3rem;
     overflow: hidden;
@@ -153,8 +153,8 @@ body {
 }
 
 .hero-logo {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
@@ -439,7 +439,7 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 textarea {
@@ -502,7 +502,7 @@ textarea {
 .btn-primary:hover {
     background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(96, 165, 250, 0.25);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 }
 
 .btn-secondary {
@@ -521,7 +521,7 @@ textarea {
 }
 
 .btn-info:hover {
-    background: #138496;
+    background: #6ba4ee;
 }
 
 /* 状态消息 */
@@ -610,7 +610,7 @@ textarea {
     overflow: hidden;
     box-shadow: 0 5px 15px var(--shadow-color);
     transition: all 0.3s ease;
-    border-top: 4px solid #60a5fa;
+    border-top: 4px solid var(--primary-light);
 }
 
 .dataset-card:hover {
@@ -620,7 +620,7 @@ textarea {
 
 .card-header {
     padding: 20px;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -647,7 +647,7 @@ textarea {
     align-items: center;
     gap: 10px;
     margin: 0 20px 15px;
-    color: #60a5fa;
+    color: var(--primary-color);
     font-size: 0.95rem;
 }
 
@@ -693,7 +693,7 @@ textarea {
 
 .card-license {
     font-size: 0.85rem;
-    color: #60a5fa;
+    color: var(--primary-color);
 }
 
 .card-actions {
@@ -1150,7 +1150,7 @@ textarea:focus,
 .search-box input:focus,
 .filter-controls select:focus {
     border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
 }
 
 /* Radio Button Accent */
@@ -1169,12 +1169,12 @@ textarea:focus,
 
 /* Card Hover Border */
 .dataset-card:hover {
-    border-color: #60a5fa;
+    border-color: var(--primary-color);
 }
 
 /* Meta Item Icons */
 .meta-item i {
-    color: #60a5fa;
+    color: var(--secondary-color);
 }
 
 /* Loading Spinner */
@@ -1182,19 +1182,19 @@ textarea:focus,
     border-top-color: var(--primary-color) !important;
 }
 
-/* Badges - Blue Theme */
+/* Badges - Modern Theme */
 .badge-wsi {
-    background: rgba(96, 165, 250, 0.08);
+    background: rgba(99, 102, 241, 0.1);
     color: var(--primary-color);
 }
 
 .badge-roi {
-    background: rgba(14, 165, 233, 0.1);
+    background: rgba(6, 182, 212, 0.1);
     color: var(--secondary-color);
 }
 
 .badge-both {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(139, 92, 246, 0.1);
     color: var(--info-color);
 }
 
@@ -1224,12 +1224,12 @@ a:hover {
 }
 
 .status-complete {
-    background: rgba(96, 165, 250, 0.08);
+    background: rgba(99, 102, 241, 0.1);
     color: var(--primary-color);
 }
 
 .status-processing {
-    background: rgba(14, 165, 233, 0.1);
+    background: rgba(6, 182, 212, 0.1);
     color: var(--secondary-color);
 }
 
@@ -1241,7 +1241,7 @@ a:hover {
 
 .btn-primary:hover {
     background: var(--primary-dark) !important;
-    box-shadow: 0 10px 25px rgba(96, 165, 250, 0.25) !important;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3) !important;
 }
 
 .btn-secondary:hover {
