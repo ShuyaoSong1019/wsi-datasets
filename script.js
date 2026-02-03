@@ -975,7 +975,7 @@ function displayTable() {
     const tableBody = document.getElementById('tableBody');
     
     if (datasets.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="11" class="text-center">暂无数据</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">暂无数据</td></tr>';
         return;
     }
     
@@ -985,18 +985,11 @@ function displayTable() {
         <tr>
             <td><span class="badge badge-${dataset.data_type.toLowerCase()}">${dataset.data_type}</span></td>
             <td>${dataset.organ_chinese}</td>
-            <td>${dataset.organ_english}</td>
             <td><strong>${dataset.dataset_name}</strong></td>
+            <td title="${dataset.description_chinese}">${dataset.description_chinese.length > 40 ? dataset.description_chinese.substring(0, 40) + '...' : dataset.description_chinese}</td>
             <td>${dataset.dataset_status}</td>
             <td>${dataset.data_format}</td>
             <td>${dataset.data_scale}</td>
-            <td>${dataset.dataset_size}</td>
-            <td>${dataset.license || '未指定'}</td>
-            <td>
-                <span class="badge badge-${dataset.commercial_use === '是' ? 'success' : 'warning'}">
-                    ${dataset.commercial_use || '未知'}
-                </span>
-            </td>
             <td>
                 <button class="btn-sm btn-info" onclick="showDatasetDetail('${dataset.id}')">
                     <i class="fas fa-eye"></i>
@@ -1185,7 +1178,7 @@ function exportToCSV() {
 function showEmptyState() {
     document.getElementById('cardsContainer').innerHTML = '';
     document.getElementById('emptyState').style.display = 'block';
-    document.getElementById('tableBody').innerHTML = '<tr><td colspan="11" class="text-center">暂无数据</td></tr>';
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" class="text-center">暂无数据</td></tr>';
 }
 
 // 搜索和筛选事件监听
