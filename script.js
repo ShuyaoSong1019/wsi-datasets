@@ -1,4 +1,9 @@
-// 全局配置
+// =============================================
+// PathDataHub - Modern Dataset Management System
+// Inspired by PathBench Architecture
+// =============================================
+
+// Global configuration
 let config = {
     repoOwner: '',
     repoName: '',
@@ -12,6 +17,7 @@ let originalDatasets = [];
 
 // DOM加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
+    initMouseFollow();
     initTabs();
     initForm();
     loadConfig();
@@ -27,9 +33,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// 初始化选项卡
+// =============================================
+// Mouse Follow Effect (PathBench Style)
+// =============================================
+function initMouseFollow() {
+    const mouseFollowBg = document.querySelector('.mouse-follow-bg');
+    if (!mouseFollowBg) return;
+
+    const heroSection = document.querySelector('.hero-section');
+    
+    heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        mouseFollowBg.style.setProperty('--mouse-x', `${x}%`);
+        mouseFollowBg.style.setProperty('--mouse-y', `${y}%`);
+    });
+}
+
+// =============================================
+// Tab System
+// =============================================
 function initTabs() {
-    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabBtns = document.querySelectorAll('.hero-tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
     tabBtns.forEach(btn => {
@@ -42,14 +69,57 @@ function initTabs() {
             
             // 添加active类
             btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
             
-            // 如果是卡片视图，刷新显示
+            // 如果是卡片视图或表格视图，刷新显示
             if (tabId === 'cards' || tabId === 'table') {
                 displayDatasets();
             }
+            
+            // 平滑滚动到内容区域
+            if (tabId !== 'cards') {
+                setTimeout(() => {
+                    targetTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
         });
     });
+}
+
+// =============================================
+// Statistics Update
+// =============================================
+function updateStatistics() {
+    const totalDatasets = datasets.filter(d => d.dataset_name).length;
+    const organs = new Set(datasets.filter(d => d.organ_english).map(d => d.organ_english));
+    const localStorage = datasets.filter(d => d.local_storage === '是').length;
+    
+    // Animated count-up effect
+    animateCount('totalDatasets', totalDatasets);
+    animateCount('totalOrgans', organs.size);
+    animateCount('totalStorage', localStorage);
+}
+
+function animateCount(elementId, target) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const duration = 1000;
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = Math.floor(current);
+    }, 16);
 }
 
 // 初始化表单
@@ -641,6 +711,9 @@ async function loadDatasets() {
         datasets = merged;
         originalDatasets = [...datasets];
 
+        // 更新统计信息（PathBench风格）
+        updateStatistics();
+        
         // 更新筛选器选项并显示
         updateFilterOptions();
         displayDatasets();

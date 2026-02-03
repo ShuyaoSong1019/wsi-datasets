@@ -1,18 +1,78 @@
+/* ========================================
+   PathDataHub - Modern Design System
+   Inspired by PathBench Design Language
+   ======================================== */
+
 :root {
-    --primary-color: #4a6fa5;
-    --primary-dark: #3a5a85;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --info-color: #17a2b8;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --border-color: #dee2e6;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    /* Color Palette - Clean Blue Theme */
+    --primary-color: #2563eb;
+    --primary-light: #3b82f6;
+    --primary-dark: #1d4ed8;
+    
+    --secondary-color: #0ea5e9;
+    --secondary-light: #38bdf8;
+    --secondary-dark: #0284c7;
+    
+    --success-color: #10b981;
+    --info-color: #3b82f6;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Background Colors */
+    --body-bg: #ffffff;
     --card-bg: #ffffff;
-    --body-bg: #f5f7fa;
+    --section-bg: #f9fafb;
+    
+    /* Border & Shadow */
+    --border-color: #e5e7eb;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --border-radius-xl: 32px;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 300ms ease;
+    --transition-slow: 500ms ease;
 }
+
+/* ========================================
+   Base Styles
+   ======================================== */
 
 * {
     box-sizing: border-box;
@@ -20,89 +80,271 @@
     padding: 0;
 }
 
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--body-bg);
-    color: var(--dark-color);
+    color: var(--gray-900);
     line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 2rem;
 }
 
-/* 头部样式 */
-.header {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+/* ========================================
+   Hero Section - PathBench Style
+   ======================================== */
+
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(74, 111, 165, 0.2);
-    text-align: center;
+    padding: 4rem 0 3rem;
+    overflow: hidden;
 }
 
-.header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+/* Mouse Follow Background Effect */
+.mouse-follow-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle 600px at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                                rgba(255, 255, 255, 0.15), 
+                                transparent);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.hero-container {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.hero-description {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-light);
+    opacity: 0.9;
+    margin-bottom: 3rem;
+}
+
+/* Statistics Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 900px;
+    margin: 3rem auto;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Hero Tabs */
+.hero-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+}
+
+.hero-tab-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    margin-bottom: 25px;
-}
-
-/* 选项卡样式 */
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.tab-btn {
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 6px;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
     color: white;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-base);
+    white-space: nowrap;
 }
 
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+.hero-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.tab-btn.active {
+.hero-tab-btn.active {
     background: white;
     color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* 选项卡内容 */
+.hero-tab-btn i {
+    font-size: 1.25rem;
+}
+
+/* ========================================
+   Animations - Apple-inspired
+   ======================================== */
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+/* Hover Lift Effect */
+.hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ========================================
+   Main Content Area
+   ======================================== */
+
+.main-content {
+    background: var(--body-bg);
+    padding: 3rem 0;
+}
+
 .tab-content {
     display: none;
-    animation: fadeIn 0.5s ease;
+    animation: fadeInUp 0.5s ease;
 }
 
 .tab-content.active {
     display: block;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--gray-900);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.section-description {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-light);
+    color: var(--gray-500);
+}
+
+/* ========================================
+   Form Styles - Modern & Clean
+   ======================================== */
+
+.form-container {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* 表单样式 */
@@ -867,4 +1109,173 @@ tbody tr:hover {
 
 .toast-info {
     background-color: var(--info-color) !important;
+}
+
+/* ========================================
+   Blue Theme Overrides - Clean & Modern
+   ======================================== */
+
+/* Form Focus States */
+input:focus, 
+select:focus, 
+textarea:focus,
+.search-box input:focus,
+.filter-controls select:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Radio Button Accent */
+.radio-option:hover {
+    border-color: var(--primary-color) !important;
+}
+
+.radio-option input[type="radio"] {
+    accent-color: var(--primary-color);
+}
+
+/* Form Section Icons */
+.form-section h3 i {
+    color: var(--primary-color);
+}
+
+/* Card Hover Border */
+.dataset-card:hover {
+    border-color: var(--primary-color);
+}
+
+/* Meta Item Icons */
+.meta-item i {
+    color: var(--primary-color);
+}
+
+/* Loading Spinner */
+.spinner {
+    border-top-color: var(--primary-color) !important;
+}
+
+/* Badges - Blue Theme */
+.badge-wsi {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
+.badge-roi {
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--secondary-color);
+}
+
+.badge-both {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info-color);
+}
+
+/* Card Type Badge */
+.card-type {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Links and Interactive Elements */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-complete {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
+.status-processing {
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--secondary-color);
+}
+
+/* Enhanced Button Styles for Blue Theme */
+.btn-primary {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark) !important;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-300) !important;
+}
+
+.btn-info {
+    background: var(--secondary-color) !important;
+}
+
+.btn-info:hover {
+    background: var(--secondary-dark) !important;
+}
+
+/* Hero Icon Animation */
+.hero-icon i {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .hero-tabs {
+        flex-direction: column;
+    }
+    
+    .hero-tab-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
 }

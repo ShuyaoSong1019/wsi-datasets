@@ -3,33 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSI/ROI数据集管理系统</title>
+    <title>PathDataHub: WSI/ROI Datasets Management Platform</title>
+    <meta name="description" content="A comprehensive management platform for Whole Slide Image and Region of Interest datasets in computational pathology">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- 头部导航 -->
-        <header class="header">
-            <h1><i class="fas fa-database"></i> WSI/ROI数据集管理系统</h1>
-            <p>收集、管理和展示全切片图像与感兴趣区域数据集信息</p>
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="cards">浏览数据集</button>
-                <button class="tab-btn" data-tab="form">添加数据集</button>
-                <button class="tab-btn" data-tab="table">表格视图</button>
+    <div class="page-wrapper">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="mouse-follow-bg"></div>
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h1 class="hero-title">PathDataHub</h1>
+                    <p class="hero-subtitle">A Comprehensive Management Platform for WSI & ROI Datasets in Computational Pathology</p>
+                    <p class="hero-description">收集、管理和展示全切片图像与感兴趣区域数据集信息</p>
+                    
+                    <!-- Statistics -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalDatasets">0</div>
+                            <div class="stat-label">Total Datasets</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalOrgans">0</div>
+                            <div class="stat-label">Organs Covered</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalStorage">0</div>
+                            <div class="stat-label">Local Datasets</div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="hero-tabs">
+                        <button class="hero-tab-btn active" data-tab="cards">
+                            <i class="fas fa-th-large"></i>
+                            <span>Browse Datasets</span>
+                        </button>
+                        <button class="hero-tab-btn" data-tab="form">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Add Dataset</span>
+                        </button>
+                        <button class="hero-tab-btn" data-tab="table">
+                            <i class="fas fa-table"></i>
+                            <span>Table View</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </header>
+        </section>
 
-        <!-- 状态信息 -->
-        <div id="statusMessage" class="status-message"></div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Status Message -->
+                <div id="statusMessage" class="status-message"></div>
 
-        <!-- 表单区域 -->
-        <section id="form" class="tab-content">
-            <div class="form-container">
-                <h2><i class="fas fa-plus-circle"></i> 添加新数据集</h2>
-                <form id="datasetForm">
-                    <div class="form-sections">
+                <!-- Form Section -->
+                <section id="form" class="tab-content">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Dataset
+                        </h2>
+                        <p class="section-description">Fill in the dataset information to contribute to our pathology data repository</p>
+                    </div>
+                    
+                    <div class="form-container">
+                        <form id="datasetForm">
+                            <div class="form-sections">
                         <!-- 基本信息 -->
                         <div class="form-section">
                             <h3><i class="fas fa-info-circle"></i> 基本信息</h3>
