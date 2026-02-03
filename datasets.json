@@ -1,25 +1,5 @@
 [
   {
-    "id": "1770109131389",
-    "data_type": "WSI",
-    "organ_chinese": "肝脏",
-    "organ_english": "Liver",
-    "dataset_name": "LiverCancer_WSI_Dataset_v1.0",
-    "dataset_status": "已标注",
-    "description_chinese": "包含1000张肝癌WSI图像，已由3位病理专家标注，包含肿瘤区域、坏死区域和正常组织区域。图像来源于2018-2022年的临床病例。",
-    "description_english": "1000 liver cancer WSI images annotated by 3 pathologists, including tumor regions, necrotic areas, and normal tissue. Images are from clinical cases between 2018-2022.",
-    "data_format": "SVS",
-    "data_scale": "1000张WSI, 平均每张包含5个ROI区域",
-    "dataset_size": "500GB (压缩后300GB)",
-    "download_link": "https://example.com/datasets/liver_cancer_v1.0.zip",
-    "license": "CC BY-NC",
-    "commercial_use": "否",
-    "local_storage": "是",
-    "local_path": "/data/WSI/liver_cancer_v1.0",
-    "notes": "数据集已通过质量控制，标注一致性达到85%以上。",
-    "created_at": "2026-02-03T08:58:51.389Z"
-  },
-  {
     "id": "1770076877_0",
     "data_type": "VQA",
     "organ_chinese": "多器官",
