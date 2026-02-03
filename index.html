@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PathDataHub: WSI/ROI Datasets Management Platform</title>
-    <meta name="description" content="A comprehensive management platform for Whole Slide Image and Region of Interest datasets in computational pathology">
+    <title>uzzleLogic Public Datasets Hub: VQA/WSI/ROI Datasets Management Platform</title>
+    <meta name="description" content="A Comprehensive Management Platform for Public VQA, WSI and ROI Datasets in Computational Pathology">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,11 +21,10 @@
             <div class="container hero-container">
                 <div class="hero-content">
                     <div class="hero-icon">
-                        <i class="fas fa-microscope"></i>
+                        <img src="favicon.ico" alt="PuzzleLogic Logo" class="hero-logo">
                     </div>
-                    <h1 class="hero-title">PathDataHub</h1>
-                    <p class="hero-subtitle">A Comprehensive Management Platform for WSI & ROI Datasets in Computational Pathology</p>
-                    <p class="hero-description">收集、管理和展示全切片图像与感兴趣区域数据集信息</p>
+                    <h1 class="hero-title">PuzzleLogic Public Datasets Hub</h1>
+                    <p class="hero-subtitle">A Comprehensive Management Platform for Public VQA, WSI and ROI Datasets in Computational Pathology</p>
                     
                     <!-- Statistics -->
                     <div class="stats-grid">
@@ -34,12 +33,16 @@
                             <div class="stat-label">Total Datasets</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="totalOrgans">0</div>
-                            <div class="stat-label">Organs Covered</div>
+                            <div class="stat-number" id="totalVQAs">0</div>
+                            <div class="stat-label">VQA Datasets</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number" id="totalStorage">0</div>
-                            <div class="stat-label">Local Datasets</div>
+                            <div class="stat-number" id="totalWSIs">0</div>
+                            <div class="stat-label">WSI Datasets</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalROIs">0</div>
+                            <div class="stat-label">ROI Datasets</div>
                         </div>
                     </div>
 

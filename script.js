@@ -93,14 +93,40 @@ function initTabs() {
 // Statistics Update
 // =============================================
 function updateStatistics() {
-    const totalDatasets = datasets.filter(d => d.dataset_name).length;
-    const organs = new Set(datasets.filter(d => d.organ_english).map(d => d.organ_english));
-    const localStorage = datasets.filter(d => d.local_storage === '是').length;
+    // 过滤有效数据集（有名称的）
+    const validDatasets = datasets.filter(d => d.dataset_name && d.dataset_name.trim() !== '');
     
-    // Animated count-up effect
+    // 计算总数
+    const totalDatasets = validDatasets.length;
+    
+    // 计算 VQA 数据集数量（data_type 包含 VQA 的）
+    const totalVQAs = validDatasets.filter(d => 
+        d.data_type && (d.data_type.toUpperCase().includes('VQA') || d.data_type === 'VQA')
+    ).length;
+    
+    // 计算 WSI 数据集数量
+    const totalWSIs = validDatasets.filter(d => 
+        d.data_type && (d.data_type === 'WSI' || d.data_type === 'Both')
+    ).length;
+    
+    // 计算 ROI 数据集数量
+    const totalROIs = validDatasets.filter(d => 
+        d.data_type && (d.data_type === 'ROI' || d.data_type === 'Both')
+    ).length;
+    
+    // 执行动画效果更新数字
     animateCount('totalDatasets', totalDatasets);
-    animateCount('totalOrgans', organs.size);
-    animateCount('totalStorage', localStorage);
+    animateCount('totalVQAs', totalVQAs);
+    animateCount('totalWSIs', totalWSIs);
+    animateCount('totalROIs', totalROIs);
+    
+    // 如果需要调试，可以打印统计信息
+    console.log('统计更新:', {
+        总数: totalDatasets,
+        VQA: totalVQAs,
+        WSI: totalWSIs,
+        ROI: totalROIs
+    });
 }
 
 function animateCount(elementId, target) {

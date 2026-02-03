@@ -14,7 +14,7 @@
     --secondary-dark: #0284c7;
     
     --success-color: #10b981;
-    --info-color: #3b82f6;
+    --info-color: #94b3e4;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
     
@@ -147,6 +147,16 @@ body {
     font-size: 4rem;
     margin-bottom: 1.5rem;
     animation: float 3s ease-in-out infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 .hero-title {
