@@ -553,6 +553,25 @@ function removeFromLocalStorage(datasetId) {
     localStorage.setItem('wsi_datasets_local', JSON.stringify(updatedData));
 }
 
+// 清除所有本地数据
+function clearAllLocalData() {
+    if (confirm('确定要清除所有本地保存的数据集吗？\n\n注意：此操作不可恢复，只会删除本地浏览器中的数据，不会影响GitHub仓库中的数据。')) {
+        // 清除本地存储
+        localStorage.removeItem('wsi_datasets_local');
+        
+        // 从内存中移除本地数据
+        datasets = datasets.filter(d => !d.isLocal);
+        originalDatasets = originalDatasets.filter(d => !d.isLocal);
+        
+        // 刷新显示
+        displayDatasets();
+        displayTable();
+        updateStatistics();
+        
+        toastr.success('本地数据已清除！');
+    }
+}
+
 // 保存数据到GitHub
 async function saveToGitHub(formData) {
     if (!config.githubToken || !config.repoOwner || !config.repoName) {
@@ -1274,6 +1293,36 @@ function showEmptyState() {
 document.getElementById('searchInput').addEventListener('input', displayDatasets);
 document.getElementById('filterType').addEventListener('change', displayDatasets);
 document.getElementById('filterOrgan').addEventListener('change', displayDatasets);
+
+// 统计卡片点击事件监听
+function initStatCardClickEvents() {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const dataType = card.getAttribute('data-type');
+            
+            // 切换到卡片视图
+            const cardsTab = document.querySelector('[data-tab="cards"]');
+            if (cardsTab) {
+                cardsTab.click();
+            }
+            
+            // 设置筛选器
+            const filterType = document.getElementById('filterType');
+            if (filterType) {
+                filterType.value = dataType;
+                displayDatasets();
+            }
+            
+            // 更新激活状态
+            statCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+}
+
+// 初始化统计卡片点击事件
+setTimeout(initStatCardClickEvents, 500);
 
 // 添加CSS样式
 const style = document.createElement('style');
