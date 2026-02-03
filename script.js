@@ -822,6 +822,9 @@ function displayCards() {
     // 应用筛选
     let filteredDatasets = filterDatasets();
     
+    // 过滤掉空数据集（没有名称的）
+    filteredDatasets = filteredDatasets.filter(d => d.dataset_name && d.dataset_name.trim() !== '');
+    
     if (filteredDatasets.length === 0) {
         container.innerHTML = '<div class="empty-state"><h3>没有匹配的数据集</h3><p>尝试不同的筛选条件</p></div>';
         return;
@@ -857,7 +860,10 @@ function filterDatasets() {
     const filterType = document.getElementById('filterType').value;
     const filterOrgan = document.getElementById('filterOrgan').value;
     
-    return datasets.filter(dataset => {
+    // 首先过滤掉空数据集
+    const validDatasets = datasets.filter(d => d.dataset_name && d.dataset_name.trim() !== '');
+    
+    return validDatasets.filter(dataset => {
         // 搜索筛选
         if (searchTerm) {
             const searchFields = [
@@ -890,9 +896,10 @@ function filterDatasets() {
 // 创建卡片HTML
 function createCardHTML(dataset) {
     const typeColors = {
-        'WSI': '#4a6fa5',
-        'ROI': '#28a745',
-        'Both': '#ffc107'
+        'VQA': '#8b5cf6',  // 紫色
+        'WSI': '#2563eb',  // 蓝色
+        'ROI': '#0ea5e9',  // 天空蓝
+        'Both': '#10b981'  // 绿色
     };
     
     const typeColor = typeColors[dataset.data_type] || '#6c757d';
@@ -1011,9 +1018,10 @@ function showDatasetDetail(datasetId) {
     modalTitle.textContent = dataset.dataset_name;
     
     const typeColors = {
-        'WSI': '#4a6fa5',
-        'ROI': '#28a745',
-        'Both': '#ffc107'
+        'VQA': '#8b5cf6',  // 紫色
+        'WSI': '#2563eb',  // 蓝色
+        'ROI': '#0ea5e9',  // 天空蓝
+        'Both': '#10b981'  // 绿色
     };
     
     const typeColor = typeColors[dataset.data_type] || '#6c757d';

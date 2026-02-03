@@ -610,7 +610,7 @@ textarea {
     overflow: hidden;
     box-shadow: 0 5px 15px var(--shadow-color);
     transition: all 0.3s ease;
-    border-top: 4px solid var(--primary-color);
+    border-top: 4px solid #60a5fa;
 }
 
 .dataset-card:hover {
@@ -620,7 +620,7 @@ textarea {
 
 .card-header {
     padding: 20px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -647,7 +647,7 @@ textarea {
     align-items: center;
     gap: 10px;
     margin: 0 20px 15px;
-    color: var(--secondary-color);
+    color: #122031;
     font-size: 0.95rem;
 }
 
@@ -693,7 +693,7 @@ textarea {
 
 .card-license {
     font-size: 0.85rem;
-    color: var(--secondary-color);
+    color: #60a5fa;
 }
 
 .card-actions {
@@ -1151,12 +1151,12 @@ textarea:focus,
 
 /* Card Hover Border */
 .dataset-card:hover {
-    border-color: var(--primary-color);
+    border-color: #60a5fa;
 }
 
 /* Meta Item Icons */
 .meta-item i {
-    color: var(--primary-color);
+    color: #60a5fa;
 }
 
 /* Loading Spinner */
