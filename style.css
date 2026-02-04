@@ -137,6 +137,54 @@ body {
     z-index: 10;
 }
 
+/* Top-right quick links for project paper and codebase */
+.top-right-links {
+    position: absolute;
+    right: 2rem;
+    top: 1.25rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+}
+
+.top-right-links .top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: background var(--transition-fast), transform var(--transition-fast), color var(--transition-fast);
+}
+
+.top-right-links .top-link i {
+    font-size: 1rem;
+}
+
+.top-right-links .top-link:hover {
+    background: white;
+    color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 900px) {
+    .top-right-links {
+        right: 1rem;
+        top: 0.75rem;
+        gap: 0.35rem;
+    }
+    .top-right-links .top-link span { display: none; }
+}
+
+@media (max-width: 520px) {
+    .top-right-links { display: none; }
+}
+
 .hero-content {
     text-align: center;
     max-width: 1200px;
